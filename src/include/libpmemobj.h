@@ -91,7 +91,7 @@ Added by Richa
 For changing the modes in which library is operated.
 */
 #define RIV_MODE 0// 1 for riv 0 for pmemoid
-#define BASED_MODE 1 // 1 for based
+#define BASED_MODE 0 // 1 for based
 
 /*
 Added by Richa

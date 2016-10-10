@@ -1,0 +1,98 @@
+pmempool-create(1)          General Commands Manual         pmempool-create(1)
+
+
+
+NAME
+       pmempool-create - Create Persistent Memory Pool of specified type
+
+SYNOPSIS
+       pmempool create [<options>] [<type>] [<bsize>] <file>
+
+DESCRIPTION
+       The  pmempool invoked with create command creates a pool file of speci‐
+       fied type. Depending on a pool type it  is  possible  to  provide  more
+       properties of pool.
+
+       Valid  pool types are: blk, log and obj which stands for pmemblk, pmem‐
+       log and pmemobj pools respectively.  By default the pool file  is  cre‐
+       ated  with  minimum  allowed  size for specified pool type. The minimum
+       sizes for blk, log and  obj  pool  types  are  PMEMBLK_MIN_POOL,  PMEM‐
+       LOG_MIN_POOL  and  PMEMOBJ_MIN_POOL  respectively.  See  libpmemblk(3),
+       libpmemlog(3) and libpmemobj(3) for details.
+
+       For pmemblk pool type block size <bsize> is a required argument.
+
+       In order to set custom size of pool use -s option, or use -M option  to
+       create a pool of maximum available size on underlying file system.
+
+       The  size  argument  may be passed with multiplicative suffixes K=1024,
+       M=1024*1024 and so  on  for  G,  T  and  P  or  the  suffixes  KB=1000,
+       MB=1000*1000 and so on for GB, TB and PB.
+
+   Available options:
+       -s, --size <size>
+               Size of pool file.
+
+       -M, --max-size
+               Set size of pool to available space of underlying file system.
+
+       -m, --mode <octal>
+               Set permissions to <octal> (the default is 0664).
+
+       -i, --inherit <file>
+               Create  a  new  pool  of  the same size and other properties as
+               <file>.
+
+       -v, --verbose
+               Increase verbosity level.
+
+       -h, --help
+               Display help message and exit.
+
+   Options for PMEMBLK:
+       By default when creating a pmem blk pool, the BTT layout is not written
+       until  the  first write operation of block entry is performed. Using -w
+       option you can force writing BTT layout by writing zero data to  speci‐
+       fied block number. By default the write operation is performed to block
+       number 0.  Please refer to libpmemblk(3) for details.
+
+       -w, --write-layout [<blockno>]
+               Force writing BTT  layout  by  performing  write  operation  to
+               <blockno> block. Default is 0.
+
+   Options for PMEMOBJ:
+       By  default  when creating a pmem obj pool, the layout name provided to
+       the libpmemobj library is an empty string.  Please  refer  to  libpmem‐
+       obj(3) for details.
+
+       -l, --layout <layout>
+               Layout name of the pmemobj pool.
+
+EXAMPLES
+       pmempool create blk 512 pool.blk
+              #  Create a blk pool file of minimum allowed size and block size
+              512 bytes
+
+       pmempool create log -M pool.log
+              # Create a log pool file of maximum allowed size
+
+       pmempool create blk --size=4G --write-layout=1 1K pool.blk
+              # Create a blk pool file of size 4G, block size 1K and write BTT
+              layout using write operation to the block number 1
+
+       pmempool create --layout my_layout obj pool.obj
+              #  Create  an  obj  pool file of minimum allowed size and layout
+              'my_layout'
+
+       pmempool create --inherit=pool.log new_pool.log
+              # Create a pool file based on pool.log file
+
+SEE ALSO
+       libpmemblk(3) libpmemlog(3) pmempool(1)
+
+PMEMPOOL
+       Part of the pmempool(1) suite.
+
+
+
+NVM Library                 pmem Tools version 0.1          pmempool-create(1)
